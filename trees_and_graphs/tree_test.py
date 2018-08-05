@@ -20,19 +20,6 @@ class BinaryTreeTest(unittest.TestCase):
         root.left.left = tree.Node('g')
         self.assertTrue(btree.is_balanced)
 
-    def test_check_complete(self):
-        root = tree.Node('a')
-        root.left = tree.Node('b')
-        root.right = tree.Node('c')
-        root.left.left = tree.Node('d')
-        root.left.right = tree.Node('e')
-        root.right.right = tree.Node('f')
-        btree = tree.BinaryTree(root)
-        self.assertFalse(btree.is_complete)
-
-        root.right.left = tree.Node('g')
-        self.assertTrue(btree.is_complete)
-
     def test_check_full(self):
         root = tree.Node('a')
         btree = tree.BinaryTree(root)
@@ -93,13 +80,43 @@ class BinaryTreeTest(unittest.TestCase):
         root.right.right.right = tree.Node(6)
         self.assertEqual(btree.height, 3)
 
-    def test_complete_v2(self):
+    def test_check_complete_confirm(self):
         root = tree.Node(0)
         root.left = tree.Node(1)
         root.right = tree.Node(2)
-        root.left.left = tree.Node(3)
-        root.right.left = tree.Node(5)
         btree = tree.BinaryTree(root)
+        self.assertTrue(btree.is_complete)
+
+        root.left.left = tree.Node(3)
+        self.assertTrue(btree.is_complete)
+
+        root.left.right = tree.Node(4)
+        self.assertTrue(btree.is_complete)
+
+    def test_check_complete_falsify(self):
+        root = tree.Node(0)
+        root.left = tree.Node(1)
+        root.right = tree.Node(2)
+        root.right.left = tree.Node(3)
+        btree = tree.BinaryTree(root)
+        self.assertFalse(btree.is_complete)
+
+        # left and right subtrees have the same number of nodes
+        root.left.right = tree.Node(4)
+        self.assertFalse(btree.is_complete)
+
+        root.right.left = None
+        self.assertFalse(btree.is_complete)
+
+        # left and right subtrees are of equal height
+        root.left.left = tree.Node(3)
+        root.right.right = tree.Node(5)
+        self.assertFalse(btree.is_complete)
+
+        # left subtree is taller than right by more than 1
+        root.right.right = None
+        root.left.left.left = tree.Node(6)
+        root.left.left.right = tree.Node(7)
         self.assertFalse(btree.is_complete)
 
 if __name__ == '__main__':

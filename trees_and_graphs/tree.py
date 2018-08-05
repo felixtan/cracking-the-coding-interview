@@ -6,12 +6,12 @@ class Node:
 
     @property
     def height(self):
-        def _height(node):
+        def calc_height(node):
             if node and (node.left or node.right):
-                return 1 + max(_height(node.left), _height(node.right))
+                return 1 + max(calc_height(node.left), calc_height(node.right))
             else:
                 return 0
-        return _height(self)
+        return calc_height(self)
 
 class Tree:
     def __init__(self, root):
@@ -22,28 +22,28 @@ class BinaryTree(Tree):
         super().__init__(root)
 
     def traverse_inorder(self, fn):
-        def _traverse(node):
+        def traverse(node):
             if node:
-                _traverse(node.left)
+                traverse(node.left)
                 fn(node)
-                _traverse(node.right)
-        _traverse(self.root)
+                traverse(node.right)
+        traverse(self.root)
 
     def traverse_preorder(self, fn):
-        def _traverse(node):
+        def traverse(node):
             if node:
                 fn(node)
-                _traverse(node.left)
-                _traverse(node.right)
-        _traverse(self.root)
+                traverse(node.left)
+                traverse(node.right)
+        traverse(self.root)
 
     def traverse_postorder(self, fn):
-        def _traverse(node):
+        def traverse(node):
             if node:
-                _traverse(node.left)
-                _traverse(node.right)
+                traverse(node.left)
+                traverse(node.right)
                 fn(node)
-        _traverse(self.root)
+        traverse(self.root)
 
     @property
     def height(self):
@@ -55,12 +55,16 @@ class BinaryTree(Tree):
 
     @property
     def is_complete(self):
-        def check_complete(node):
-            if node and node.right:
-                return node.left and check_complete(node.left) and check_complete(node.right)
-            else:
-                return True
-        return check_complete(self.root)
+        def children_are_ordered(node):
+            return not node.right or node.right and node.left
+
+        def subtrees_are_ordered(node):
+            return (children_are_ordered(node) and
+                    subtrees_are_ordered(node.left) and
+                    subtrees_are_ordered(node.right)
+                    if node else True)
+
+        return subtrees_are_ordered(self.root) and self.root.left.height - self.root.right.height in [0, 1]
 
     @property
     def is_full(self):
