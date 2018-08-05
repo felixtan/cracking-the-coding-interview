@@ -14,11 +14,11 @@ class Node:
         return calc_height(self)
 
 class Tree:
-    def __init__(self, root):
+    def __init__(self, root = None):
         self.root = root
 
 class BinaryTree(Tree):
-    def __init__(self, root):
+    def __init__(self, root = None):
         super().__init__(root)
 
     def traverse_inorder(self, fn):
@@ -47,36 +47,74 @@ class BinaryTree(Tree):
 
     @property
     def height(self):
-      return self.root.height
+        return self.root.height
+
+    @property
+    def left(self):
+        return BinaryTree(self.root.left) if self.root.left else None
+
+    @property
+    def right(self):
+        return BinaryTree(self.root.right) if self.root.right else None
+
+    @property
+    def nodes(self):
+        class Counter:
+            def __init__(self):
+                self.value = 0
+
+            def incr(self):
+                self.value += 1
+
+        def count_nodes(counter):
+            def _count_nodes(node):
+                if node: counter.incr()
+            return _count_nodes
+
+        counter = Counter()
+        self.traverse_preorder(count_nodes(counter))
+
+        return counter.value
 
     @property
     def is_balanced(self):
-        return abs(self.root.left.height - self.root.right.height) <= 1
+        return abs(self.left.height - self.right.height) <= 1
 
     @property
     def is_complete(self):
-        def children_are_ordered(node):
-            return not node.right or node.right and node.left
+        def children_are_ordered(reducer):
+            def _children_are_ordered(node):
+                reducer.value = reducer.value and (node.right and node.left or not node.right)
+            return _children_are_ordered
 
-        def subtrees_are_ordered(node):
-            return (children_are_ordered(node) and
-                    subtrees_are_ordered(node.left) and
-                    subtrees_are_ordered(node.right)
-                    if node else True)
+        def subtrees_are_ordered(tree):
+            class BoolReducer:
+                def __init__(self, value = None):
+                    self.value = bool(value)
 
-        return subtrees_are_ordered(self.root) and self.root.left.height - self.root.right.height in [0, 1]
+            reducer = BoolReducer(True)
+            self.traverse_preorder(children_are_ordered(reducer))
+            return reducer.value
+
+        def left_is_filled_first(tree):
+            left, right = BinaryTree(tree.left), BinaryTree(tree.right)
+            return left.nodes >= right.nodes if tree.is_full else left.nodes > right.nodes
+
+        return (subtrees_are_ordered(self) and
+                left_is_filled_first(self) and
+                self.left.height - self.right.height in [0, 1])
 
     @property
     def is_full(self):
-        def check_full(node):
-            if not node:
+        def check_full(tree):
+            if not tree:
                 return True
             else:
-                if bool(node.left) != bool(node.right):
+                if bool(tree.left) != bool(tree.right):
                     return False
                 else:
-                    return check_full(node.left) and check_full(node.right)
-        return check_full(self.root)
+                    return check_full(tree.left) and check_full(tree.right)
+        return check_full(self)
 
     @property
     def is_perfect(self):
@@ -92,6 +130,5 @@ class BinaryTree(Tree):
                     return False
             else:
                 return True
-        print(is_ordered(self.root))
-        print(self.is_complete)
+
         return self.is_complete and is_ordered(self.root)

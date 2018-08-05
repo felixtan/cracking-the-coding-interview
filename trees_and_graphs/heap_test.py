@@ -8,18 +8,17 @@ class MinHeapTest(unittest.TestCase):
         root.left = Node(1)
         root.right = Node(2)
         root.left.left = Node(3)
-        min_heap = heap.MinHeap(root)
-        self.assertTrue(min_heap.is_min_heap)
+        self.assertTrue(isinstance(heap.MinHeap(root), heap.MinHeap))
 
         root.left.value = 4
-        self.assertFalse(min_heap.is_min_heap)      # not ordered
+        self.assertRaises(Exception, heap.MinHeap, root)      # not ordered
 
         root.left.value = 1
         root.right.left = Node(5)
-        self.assertFalse(min_heap.is_min_heap)      # not complete
+        self.assertRaises(Exception, heap.MinHeap, root)      # not complete
 
         root.left.right = Node(6)
-        self.assertTrue(min_heap.is_min_heap)       
+        self.assertTrue(isinstance(heap.MinHeap(root), heap.MinHeap))
 
     def test_insert(self):
         root = Node(1)
