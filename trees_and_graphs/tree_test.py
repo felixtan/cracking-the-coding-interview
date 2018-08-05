@@ -8,27 +8,27 @@ def store_ordering(order_list):
 
 class BinaryTreeTest(unittest.TestCase):
     def test_check_balanced(self):
-        root = tree.Node('a')
-        root.left = tree.Node('b')
-        root.right = tree.Node('c')
-        root.right.left = tree.Node('d')
-        root.right.right = tree.Node('e')
-        root.right.right.left = tree.Node('f')
+        root = tree.Node(0)
+        root.left = tree.Node(1)
+        root.right = tree.Node(2)
+        root.right.left = tree.Node(3)
+        root.right.right = tree.Node(4)
+        root.right.right.left = tree.Node(5)
         btree = tree.BinaryTree(root)
         self.assertFalse(btree.is_balanced)
 
-        root.left.left = tree.Node('g')
+        root.left.left = tree.Node(6)
         self.assertTrue(btree.is_balanced)
 
     def test_check_full(self):
-        root = tree.Node('a')
+        root = tree.Node(0)
         btree = tree.BinaryTree(root)
         self.assertTrue(btree.is_full)
 
-        root.left = tree.Node('b')
+        root.left = tree.Node(1)
         self.assertFalse(btree.is_full)
 
-        root.right = tree.Node('c')
+        root.right = tree.Node(2)
         self.assertTrue(btree.is_full)
 
     def test_inorder_traversal(self):
@@ -118,6 +118,34 @@ class BinaryTreeTest(unittest.TestCase):
         root.left.left.left = tree.Node(6)
         root.left.left.right = tree.Node(7)
         self.assertFalse(btree.is_complete)
+
+    def test_check_perfect(self):
+        root = tree.Node(0)
+        root.left = tree.Node(1)
+        root.right = tree.Node(2)
+        btree = tree.BinaryTree(root)
+        self.assertTrue(btree.is_perfect)
+
+        root.left.left = tree.Node(3)
+        self.assertFalse(btree.is_perfect)
+
+        root.left.right = tree.Node(4)
+        self.assertTrue(btree.is_perfect)
+
+        root.right.left = tree.Node(5)
+        self.assertFalse(btree.is_perfect)
+
+        root.right.right = tree.Node(6)
+        self.assertTrue(btree.is_perfect)
+
+        temp = root.right
+        root.right = None
+        self.assertFalse(btree.is_perfect)
+
+        root.right = temp
+        temp = root.left
+        root.left = None
+        self.assertFalse(btree.is_perfect)
 
 if __name__ == '__main__':
   unittest.main()

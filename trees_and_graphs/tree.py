@@ -79,6 +79,10 @@ class BinaryTree(Tree):
         return check_full(self.root)
 
     @property
+    def is_perfect(self):
+        return self.is_full and self.is_complete
+
+    @property
     def is_min_heap(self):
         def is_ordered(node):
             if node:
