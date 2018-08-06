@@ -22,23 +22,25 @@ def ordinal(n):
         return '%dth' % n
 
 def compare_perf(N = 25):
+    test = 'for i in range(%d): fibonacci(i)' % N
+
     print('calculate the %s fibonacci number' % ordinal(N))
 
     print('recursive, no memoization:\t%fs' % timeit.timeit(
-        setup='from __main__ import recursive_not_memoized',
-        stmt='for i in range(%d): recursive_not_memoized(i)' % N,
+        setup='from __main__ import recursive_not_memoized as fibonacci',
+        stmt=test,
         number=10
     ))
 
     print('recursive, with memoization:\t%fs' % timeit.timeit(
-        setup='from __main__ import recursive_memoized',
-        stmt='for i in range(%d): recursive_memoized(i)' % N,
+        setup='from __main__ import recursive_memoized as fibonacci',
+        stmt=test,
         number=10
     ))
 
     print('iterative:\t\t\t%fs' % timeit.timeit(
-        setup='from __main__ import iterative',
-        stmt='for i in range(%d): iterative(i)' % N,
+        setup='from __main__ import iterative as fibonacci',
+        stmt=test,
         number=10
     ))
 
