@@ -1,4 +1,4 @@
-#! /usr/bin/env python3
+#!/usr/bin/env python3
 
 import timeit
 from recursive import fibonacci as recursive_not_memoized
