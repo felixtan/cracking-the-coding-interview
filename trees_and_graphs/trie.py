@@ -11,9 +11,13 @@ class Trie:
         self.root = Node('')
 
         for word in words:
-            self.insertWord(word, self.root)
+            self.insert_word(word)
 
-    def insertWord(self, word, node):
+    # O(len(word))
+    def insert_word(self, word, node = None):
+        if not node:
+            node = self.root
+
         if word:
             char = word[0]
 
@@ -23,8 +27,10 @@ class Trie:
                 child = Node(char)
                 node.children[char] = child
 
-            self.insertWord(word[1:], child)
+            self.insert_word(word[1:], child)
 
+
+    # O(len(prefix))
     def find_prefix_node(self, prefix, node = None):
         if not node:
             node = self.root
